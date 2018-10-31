@@ -1,0 +1,80 @@
+&nbsp;&nbsp;
+<button type="button" id="recordBtn"
+        onclick="onClickRecordBtn()" class="btn btn-success">
+  Start Recording
+</button>
+&nbsp;
+<span id="leftSec"></span>
+&nbsp;
+Free Disk Space:<span id="diskFreeMb"></span>MB
+
+
+
+<script>
+  // function keepGetUpdateRecordBtn(action){
+  //   if (action){
+  //     window.recordTimer = setInterval('getUpdateRecordBtn()', 1000);
+  //   }
+  //   else{
+  //     clearInterval(window.recordTimer);
+  //   }
+  // }
+
+  function onClickRecordBtn(){
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '/record');
+    xhr.setRequestHeader('content-type', 'application/json');
+    console.log(xhr)
+    xhr.onreadystatechange = function(){
+      getUpdateRecordBtn();
+    };
+
+    if ($('#recordBtn').text().trim() === 'Start Recording'){
+      xhr.send(JSON.stringify({'action': 'on'}));
+    }
+    else{
+      xhr.send(JSON.stringify({'action': 'off'}));
+    }
+  }
+
+  function getUpdateRecordBtn(){
+    let xhr = new XMLHttpRequest();
+
+    xhr.open('GET', '/record');
+    xhr.responseType = 'json';
+
+    xhr.onreadystatechange = function(){
+      if (this.readyState===4 && this.status===200){
+        let $recordBtn = $('#recordBtn');
+
+        if (this.response.record_flag === true){
+          // recording
+          $('#leftSec').text(this.response.left_sec + 'S');
+
+          if ($recordBtn.text().trim() === 'Start Recording'){
+            $recordBtn.text('Stop Recording');
+            $recordBtn.attr('class', 'btn btn-danger');
+            // keepGetUpdateRecordBtn(true);
+          }
+        }
+        else{  // status === false => not recording
+          $('#leftSec').text('');
+
+          if ($recordBtn.text().trim() === 'Stop Recording'){
+            $recordBtn.text('Start Recording');
+            $recordBtn.attr('class', 'btn btn-success');
+            // keepGetUpdateRecordBtn(false);
+          }
+        }
+
+        $('#diskFreeMb').text(this.response.disk_free_mb);
+      }
+    };
+
+    xhr.send(null);
+  }
+
+  getUpdateRecordBtn();
+  setInterval(getUpdateRecordBtn, 1000);  // update for every 1 second
+
+</script>
