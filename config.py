@@ -11,6 +11,6 @@ class Config:
 
 
     camera = 0
-    record_path = '/u/home/hodgkinsona/Documents/gesture_predictor/record'
+    record_path = '/u/home/hodgkinsona/Documents/gesture_recognition/record'
     if not os.path.exists(record_path):
         os.makedirs(record_path)

@@ -64,24 +64,24 @@ def gen_frame():
         if switch.value:
             fname = str(datetime.now().strftime('%m%d_%H:%M:%S:%f')) + '.jpg'  # '0912_03:47:14:263373.jpg'
             save_image(frame, os.path.join(Config.record_path, fname))
-        # result, pose = handler.process_image(frame)
-        # result.draw_poses(0.15,
-        #                   0., handler.crop_full_scale, handler.test_img_copy)
-        # if handler.mean_response > FLAGS.confidence:
-        #     prediction, probs =  pose_classifier.predict(pose)
-        #     labels = {
-        #         0: "no_fingers",
-        #         1: "index_finger",
-        #         2: "two_fingers",
-        #         3: "three_fingers",
-        #         4: "four_fingers",
-        #         5: "five_fingers",
-        #         6: "thumbs_up",
-        #         7: "thumbs_down"
-        #     }
+        result, pose = handler.process_image(frame)
+        result.draw_poses(0.15,
+                          0., handler.crop_full_scale, handler.test_img_copy)
+        if handler.mean_response > FLAGS.confidence:
+            prediction, probs =  pose_classifier.predict(pose)
+            labels = {
+                0: "no_fingers",
+                1: "index_finger",
+                2: "two_fingers",
+                3: "three_fingers",
+                4: "four_fingers",
+                5: "five_fingers",
+                6: "thumbs_up",
+                7: "thumbs_down"
+            }
              
-        #     result.add_prediction(labels[prediction], probs)
-        # pose_frame = image2bytes(result.image_with_poses, mode='RGB')
+            result.add_prediction(labels[prediction], probs)
+        pose_frame = image2bytes(result.image_with_poses, mode='RGB')
         pose_frame = image2bytes(frame, mode='RGB')
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + pose_frame + b'\r\n')

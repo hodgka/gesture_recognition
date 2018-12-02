@@ -1,1 +1,1 @@
-FLASK_APP=gesture_predictor.py
+FLASK_APP=gesture_recognition.py
